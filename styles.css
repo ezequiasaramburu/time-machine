@@ -201,6 +201,7 @@ body::before {
     display: flex;
     gap: 10px;
     align-items: center;
+    background-color: #000;
     padding: 15px;
     background-color: #000;
     border: 2px solid #00ff00;
@@ -239,6 +240,10 @@ button:hover {
     color: #000;
     text-shadow: none;
     box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);
+}
+
+.back-button {
+    margin-left: auto;
 }
 
 ::-webkit-scrollbar {
@@ -398,4 +403,75 @@ body.shutdown * {
 .speedrun-event {
     color: #00ff00;
     opacity: 0.9;
-} 
+}
+
+.events-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.event-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 5px 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.event-item:hover {
+    opacity: 0.8;
+}
+
+.event-dot {
+    color: #00ff00;
+    text-shadow: 0 0 5px #00ff00;
+    font-size: 12px;
+    margin-top: 8px;
+}
+
+.event-content {
+    flex: 1;
+}
+
+.event-year {
+    color: #00ff00;
+    font-weight: bold;
+    margin-bottom: 2px;
+}
+
+.event-text {
+    color: #00ff00;
+    opacity: 0.9;
+}
+
+.event-detail {
+    padding: 20px;
+    border: 1px solid #00ff00;
+    margin: 20px 0;
+    background: rgba(0, 255, 0, 0.1);
+}
+
+.event-year-header {
+    color: #00ff00;
+    font-size: 24px;
+    margin-bottom: 15px;
+    text-shadow: 0 0 5px #00ff00;
+}
+
+.event-detail-text {
+    color: #00ff00;
+    font-size: 18px;
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+/* .back-button {
+    background: transparent;
+    border: 1px solid #00ff00;
+    color: #00ff00;
+    padding: 8px 16px;
+    cursor: pointer;
+    font-family: monospace;
+    transition: all 0.3s ease-in-out;
+} */

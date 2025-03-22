@@ -2,14 +2,10 @@
 const terminal = document.getElementById('terminal');
 const yearInput = document.getElementById('yearInput');
 const travelBtn = document.getElementById('travelBtn');
-const nextEventBtn = document.getElementById('nextEventBtn');
+const backToTimelineBtn = document.getElementById('backToTimelineBtn');
 
 // Secret codes and their messages
 const secretCodes = {
-    "01000101": {
-        message: "SPEEDRUN MODE ACTIVATED\nDisplaying all historical events...",
-        isSpeedrun: true
-    },
     "9999": {
         message: "WARNING! SYSTEM OVERLOAD\nINITIATING EMERGENCY SHUTDOWN...",
         isSelfDestruct: true
@@ -35,7 +31,7 @@ const secretCodes = {
        .     *     --^--   *    .       *   .    .
     * * * DON'T PANIC! * * * DEEP THOUGHT * * *`
     },
-    "1985": {
+    "88": {
         message: "Great Scott! You've discovered the time machine's secret code!",
         ascii: `
             _______________________
@@ -51,7 +47,7 @@ const secretCodes = {
               88 MPH ->->->
     * * * FLUX CAPACITOR ACTIVATED * * *`
     },
-    "2001": {
+    "9000": {
         message: "I'm sorry Dave, I'm afraid I can't do that...",
         ascii: `
               ╭──────────────╮
@@ -88,6 +84,7 @@ let isTyping = false;
 let currentText = '';
 let cursorInterval;
 let currentTypewriterSound = null;
+let isTimelineView = true; // Track if we're showing the timeline
 
 // Add cursor element
 const cursor = document.createElement('span');
@@ -109,10 +106,17 @@ style.textContent = `
 `;
 document.head.appendChild(style);
 
+// Function to update back button visibility
+function updateBackButtonVisibility() {
+    backToTimelineBtn.style.display = isTimelineView ? 'none' : 'block';
+}
+
 // Function to clear terminal
 function clearTerminal() {
     terminal.innerHTML = '';
     terminal.appendChild(cursor);
+    isTimelineView = true;
+    updateBackButtonVisibility();
 }
 
 // Function to stop current typewriter sound
@@ -135,10 +139,15 @@ async function typeText(text, isSecret = false, ascii = null) {
     // Disable input and buttons while typing
     yearInput.disabled = true;
     travelBtn.disabled = true;
-    nextEventBtn.disabled = true;
     
     // Clear previous text
     clearTerminal();
+    
+    // Update timeline view state for secret messages
+    if (isSecret) {
+        isTimelineView = false;
+        updateBackButtonVisibility();
+    }
     
     // Add glitch effect
     terminal.classList.add('glitch');
@@ -197,7 +206,6 @@ async function typeText(text, isSecret = false, ascii = null) {
     // Re-enable input and buttons after typing
     yearInput.disabled = false;
     travelBtn.disabled = false;
-    nextEventBtn.disabled = false;
     isTyping = false;
 }
 
@@ -212,7 +220,6 @@ async function backspaceText() {
     // Disable input and buttons while backspacing
     yearInput.disabled = true;
     travelBtn.disabled = true;
-    nextEventBtn.disabled = true;
     
     // Remove characters one by one
     while (terminal.childNodes.length > 1) { // Keep cursor
@@ -224,7 +231,6 @@ async function backspaceText() {
     // Re-enable input and buttons after backspacing
     yearInput.disabled = false;
     travelBtn.disabled = false;
-    nextEventBtn.disabled = false;
     isTyping = false;
 }
 
@@ -233,7 +239,6 @@ async function handleSelfDestruct() {
     // Disable all inputs
     yearInput.disabled = true;
     travelBtn.disabled = true;
-    nextEventBtn.disabled = true;
     
     // Clear terminal
     clearTerminal();
@@ -279,16 +284,18 @@ async function handleSelfDestruct() {
     // Re-enable inputs
     yearInput.disabled = false;
     travelBtn.disabled = false;
-    nextEventBtn.disabled = false;
     
     // Reset input value
     yearInput.value = '';
+    
+    // Show the complete list of events again
+    displayEventsList();
 }
 
 // Function to validate year input
 function validateYear(year) {
     const currentYear = new Date().getFullYear();
-    const minYear = 1900;
+    const minYear = 1936;
     
     if (isNaN(year)) {
         return {
@@ -305,7 +312,6 @@ function validateYear(year) {
             isValid: true,
             isSecretCode: true,
             isSelfDestruct: secretCode.isSelfDestruct,
-            isSpeedrun: secretCode.isSpeedrun,
             message: typeof secretCode === 'string' ? secretCode : secretCode.message,
             ascii: typeof secretCode === 'string' ? null : secretCode.ascii
         };
@@ -329,32 +335,11 @@ function validateYear(year) {
     return { isValid: true };
 }
 
-// Function to find next event
-function findNextEvent(currentYear) {
-    const years = Object.keys(historicalEvents).map(Number).sort((a, b) => a - b);
-    const nextYear = years.find(year => year > currentYear);
-    
-    if (nextYear) {
-        return {
-            year: nextYear,
-            event: historicalEvents[nextYear]
-        };
-    }
-    
-    return null;
-}
-
-// Function to handle speedrun mode
-async function handleSpeedrunMode() {
-    // Clear terminal
-    clearTerminal();
-    
-    // Display speedrun activation message
-    await typeText("SPEEDRUN MODE ACTIVATED\nDisplaying all historical events...", 50);
-    
-    // Create speedrun container
-    const speedrunContainer = document.createElement('div');
-    speedrunContainer.className = 'speedrun-mode';
+// Function to display the complete list of events
+async function displayEventsList() {
+    // Create container for events
+    const eventsContainer = document.createElement('div');
+    eventsContainer.className = 'events-list';
     
     // Sort events by year
     const sortedYears = Object.keys(historicalEvents)
@@ -364,98 +349,38 @@ async function handleSpeedrunMode() {
     // Add each event to the container
     sortedYears.forEach(year => {
         const eventDiv = document.createElement('div');
-        eventDiv.className = 'speedrun-item';
+        eventDiv.className = 'event-item';
         
         // Add dot
         const dot = document.createElement('span');
-        dot.className = 'speedrun-dot';
+        dot.className = 'event-dot';
         dot.textContent = '•';
         eventDiv.appendChild(dot);
         
         // Add content
         const content = document.createElement('div');
-        content.className = 'speedrun-content';
+        content.className = 'event-content';
         
         // Add year
         const yearDiv = document.createElement('div');
-        yearDiv.className = 'speedrun-year';
+        yearDiv.className = 'event-year';
         yearDiv.textContent = year;
         content.appendChild(yearDiv);
         
         // Add event
         const eventText = document.createElement('div');
-        eventText.className = 'speedrun-event';
+        eventText.className = 'event-text';
         eventText.textContent = historicalEvents[year];
         content.appendChild(eventText);
         
         eventDiv.appendChild(content);
-        speedrunContainer.appendChild(eventDiv);
+        eventsContainer.appendChild(eventDiv);
     });
     
     // Add the container to the terminal
-    terminal.insertBefore(speedrunContainer, cursor);
-    
-    // Wait for 10 seconds
-    await new Promise(resolve => setTimeout(resolve, 25000));
-    
-    // Clear terminal and show deactivation message
-    clearTerminal();
-    await typeText("SPEEDRUN MODE DEACTIVATED\nReturning to normal operation...", 50);
-    
-    // Wait for 2 seconds
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    
-    // Clear terminal one final time
-    clearTerminal();
-    
-    // Clear the input field
-    yearInput.value = '';
-}
-
-// Add counter for next event button
-let nextEventUsageCount = 0;
-const MAX_NEXT_EVENT_USES = 5;
-
-// Function to handle next event
-async function handleNextEvent() {
-    // Check if we've reached the maximum uses
-    if (nextEventUsageCount >= MAX_NEXT_EVENT_USES) {
-        await typeText('Maximum consecutive uses reached. Please enter a new year to continue.');
-        return;
-    }
-
-    // Play click sound
-    clickSound.currentTime = 0;
-    clickSound.play();
-    
-    const currentYear = parseInt(yearInput.value) || 1900;
-    const nextEvent = findNextEvent(currentYear);
-    
-    if (nextEvent) {
-        yearInput.value = nextEvent.year;
-        
-        // Add CRT flicker effect
-        terminal.classList.add('crt-flicker');
-        await new Promise(resolve => setTimeout(resolve, 100));
-        terminal.classList.remove('crt-flicker');
-        
-        // Fade out current content
-        terminal.classList.add('fade-out');
-        await new Promise(resolve => setTimeout(resolve, 300));
-        
-        // Clear terminal
-        clearTerminal();
-        terminal.classList.remove('fade-out');
-        terminal.classList.add('fade-in');
-        
-        // Show the next event
-        await typeText(nextEvent.event);
-        
-        // Increment usage counter
-        nextEventUsageCount++;
-    } else {
-        await typeText('No more events available.');
-    }
+    terminal.insertBefore(eventsContainer, cursor);
+    isTimelineView = true;
+    updateBackButtonVisibility();
 }
 
 // Function to handle year selection
@@ -482,17 +407,6 @@ async function handleYearSelection() {
         return;
     }
     
-    // Handle speedrun mode
-    if (validation.isSpeedrun) {
-        await handleSpeedrunMode();
-        return;
-    }
-    
-    // Reset next event usage counter when a valid year is entered
-    if (historicalEvents[year]) {
-        nextEventUsageCount = 0;
-    }
-    
     // Add CRT flicker effect
     terminal.classList.add('crt-flicker');
     await new Promise(resolve => setTimeout(resolve, 100));
@@ -509,11 +423,32 @@ async function handleYearSelection() {
     
     // Show the appropriate message
     if (validation.isSecretCode) {
+        isTimelineView = false;
+        updateBackButtonVisibility();
         await typeText(validation.message, true, validation.ascii);
     } else {
         const event = historicalEvents[year];
         if (event) {
-            await typeText(event);
+            // Create detailed event view
+            const eventDiv = document.createElement('div');
+            eventDiv.className = 'event-detail';
+            
+            // Add year header
+            const yearHeader = document.createElement('h2');
+            yearHeader.textContent = year;
+            yearHeader.className = 'event-year-header';
+            eventDiv.appendChild(yearHeader);
+            
+            // Add event text
+            const eventText = document.createElement('p');
+            eventText.textContent = event;
+            eventText.className = 'event-detail-text';
+            eventDiv.appendChild(eventText);
+            
+            // Add the event detail to the terminal
+            terminal.insertBefore(eventDiv, cursor);
+            isTimelineView = false;
+            updateBackButtonVisibility();
         } else {
             await typeText('No data available. Please try another year.');
         }
@@ -522,15 +457,16 @@ async function handleYearSelection() {
 
 // Add event listeners
 travelBtn.addEventListener('click', handleYearSelection);
-nextEventBtn.addEventListener('click', handleNextEvent);
+backToTimelineBtn.addEventListener('click', () => {
+    clearTerminal();
+    displayEventsList();
+    yearInput.value = ''; // Clear the input field
+});
 
 // Add input validation on change
 yearInput.addEventListener('input', (e) => {
     const year = parseInt(e.target.value);
     const validation = validateYear(year);
-    
-    // Disable next event button if input is empty or invalid
-    nextEventBtn.disabled = !e.target.value || !validation.isValid;
     
     if (year) {
         if (!validation.isValid) {
@@ -541,64 +477,7 @@ yearInput.addEventListener('input', (e) => {
     }
 });
 
-// Set initial disabled state of next event button
-nextEventBtn.disabled = true;
-
-// Cryptic hints system
-const crypticHints = [
-    "Some secrets are hidden in numbers...",
-    "Some years holds special meaning...",
-    "Emergency protocols can be triggered...",
-    "Certain numbers unlock hidden messages...",
-    "The past holds many secrets...",
-    "Time travel isn't the only mystery...",
-    "Some codes are more destructive than others...",
-    "Numbers can be more than just years...",
-    "The future isn't the only destination...",
-    "Hidden messages await discovery..."
-];
-
-let hintTimeout;
-let currentHint = null;
-
-function showRandomHint() {
-    // Clear any existing hint
-    if (currentHint) {
-        currentHint.remove();
-    }
-    
-    // Create new hint element
-    const hint = document.createElement('div');
-    hint.className = 'cryptic-hint';
-    hint.textContent = crypticHints[Math.floor(Math.random() * crypticHints.length)];
-    document.body.appendChild(hint);
-    currentHint = hint;
-    
-    // Show hint with fade in
-    setTimeout(() => hint.classList.add('visible'), 100);
-    
-    // Hide hint after 5 seconds
-    setTimeout(() => {
-        hint.classList.remove('visible');
-        setTimeout(() => hint.remove(), 500);
-    }, 5000);
-}
-
-function scheduleNextHint() {
-    // Random delay between 15-20 seconds for testing
-    const delay = Math.floor(Math.random() * (20000 - 15000) + 15000);
-    hintTimeout = setTimeout(() => {
-        showRandomHint();
-        scheduleNextHint();
-    }, delay);
-}
-
-// Start the hint system when the page loads
+// Display events list when the page loads
 document.addEventListener('DOMContentLoaded', () => {
-    // Initial delay before first hint (10 seconds for testing)
-    const initialDelay = 10000;
-    setTimeout(() => {
-        showRandomHint();
-        scheduleNextHint();
-    }, initialDelay);
+    displayEventsList();
 }); 
