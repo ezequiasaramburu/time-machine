@@ -15,6 +15,7 @@ const secretCodes = {
 
 // Animation settings
 const TYPING_SPEED = 50; // milliseconds per character
+const SECRET_TYPING_SPEED = 30; // faster typing speed for secret messages
 const BACKSPACE_SPEED = 30; // milliseconds per character
 const CURSOR_BLINK_SPEED = 500; // milliseconds
 
@@ -65,7 +66,7 @@ function stopTypewriterSound() {
 }
 
 // Function to type text with animation
-async function typeText(text) {
+async function typeText(text, isSecret = false) {
     if (isTyping) return;
     isTyping = true;
     
@@ -105,12 +106,16 @@ async function typeText(text) {
     currentTypewriterSound = typewriterSound.cloneNode();
     currentTypewriterSound.play();
     
-    // Type new text
+    // Type new text with appropriate speed and styling
+    const typingSpeed = isSecret ? SECRET_TYPING_SPEED : TYPING_SPEED;
     for (let i = 0; i < text.length; i++) {
         const char = document.createElement('span');
         char.textContent = text[i];
+        if (isSecret) {
+            char.classList.add('secret-message');
+        }
         terminal.insertBefore(char, cursor);
-        await new Promise(resolve => setTimeout(resolve, TYPING_SPEED));
+        await new Promise(resolve => setTimeout(resolve, typingSpeed));
     }
     
     // Stop typewriter sound
@@ -254,7 +259,7 @@ async function handleYearSelection() {
     
     // Show the appropriate message
     if (validation.isSecretCode) {
-        await typeText(validation.message);
+        await typeText(validation.message, true);
     } else {
         const event = historicalEvents[year];
         if (event) {

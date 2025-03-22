@@ -268,4 +268,15 @@ button:hover {
 
 .fade-in {
     opacity: 1;
+}
+
+.secret-message {
+    color: cyan;
+    text-shadow: 0px 0px 5px cyan;
+    animation: secretGlow 2s infinite;
+}
+
+@keyframes secretGlow {
+    0%, 100% { text-shadow: 0px 0px 5px cyan; }
+    50% { text-shadow: 0px 0px 10px cyan; }
 } 
