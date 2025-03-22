@@ -6,6 +6,10 @@ const nextEventBtn = document.getElementById('nextEventBtn');
 
 // Secret codes and their messages
 const secretCodes = {
+    "9999": {
+        message: "WARNING! SYSTEM OVERLOAD\nINITIATING EMERGENCY SHUTDOWN...",
+        isSelfDestruct: true
+    },
     "1337": {
         message: "H4ck the pl4n3t!",
         ascii: `
@@ -46,21 +50,21 @@ const secretCodes = {
     "2001": {
         message: "I'm sorry Dave, I'm afraid I can't do that...",
         ascii: `
-      ╭──────────────╮
-     ╭│              │╮
-    ╭││  [HAL 9000]  ││╮
-   ╭│││    ╭────╮    │││╮
-  ╭││││    │  ● │    ││││╮
- ╭│││││    ╰────╯    │││││╮
-╭││││││              ││││││╮
-╰││││││              ││││││╯
- ╰│││││              │││││╯
-  ╰││││              ││││╯
-   ╰│││              │││╯
-    ╰││              ││╯
-     ╰│              │╯
-      ╰──────────────╯
-    * * * HAL 9000 * * *`
+              ╭──────────────╮
+             ╭│              │╮
+            ╭││  [HAL 9000]  ││╮
+           ╭│││    ╭────╮    │││╮
+          ╭││││    │  ● │    ││││╮
+         ╭│││││    ╰────╯    │││││╮
+        ╭││││││              ││││││╮
+        ╰││││││              ││││││╯
+         ╰│││││              │││││╯
+          ╰││││              ││││╯
+           ╰│││              │││╯
+            ╰││              ││╯
+             ╰│              │╯
+              ╰──────────────╯
+            * * * HAL 9000 * * *`
     },
 };
 
@@ -220,6 +224,63 @@ async function backspaceText() {
     isTyping = false;
 }
 
+// Function to handle self-destruct sequence
+async function handleSelfDestruct() {
+    // Disable all inputs
+    yearInput.disabled = true;
+    travelBtn.disabled = true;
+    nextEventBtn.disabled = true;
+    
+    // Clear terminal
+    clearTerminal();
+    
+    // Add self-destruct class to body instead of terminal
+    document.body.classList.add('self-destruct');
+    
+    // Display warning message
+    const warningDiv = document.createElement('div');
+    warningDiv.className = 'self-destruct-message';
+    warningDiv.style.whiteSpace = 'pre';
+    warningDiv.textContent = "WARNING! SYSTEM OVERLOAD\nINITIATING EMERGENCY SHUTDOWN...";
+    terminal.insertBefore(warningDiv, cursor);
+    
+    // Add countdown timer
+    const countdownDiv = document.createElement('div');
+    countdownDiv.className = 'countdown-timer';
+    terminal.insertBefore(countdownDiv, cursor);
+    
+    // Countdown from 5
+    for (let i = 5; i > 0; i--) {
+        countdownDiv.textContent = i;
+        await new Promise(resolve => setTimeout(resolve, 1000));
+    }
+    
+    // Show final message
+    countdownDiv.textContent = "SYSTEM DESTROYED";
+    await new Promise(resolve => setTimeout(resolve, 500));
+    
+    // Remove self-destruct class and add shutdown class
+    document.body.classList.remove('self-destruct');
+    document.body.classList.add('shutdown');
+    
+    // Wait for 2 seconds in black screen
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    
+    // Remove shutdown class
+    document.body.classList.remove('shutdown');
+    
+    // Clear terminal
+    clearTerminal();
+    
+    // Re-enable inputs
+    yearInput.disabled = false;
+    travelBtn.disabled = false;
+    nextEventBtn.disabled = false;
+    
+    // Reset input value
+    yearInput.value = '';
+}
+
 // Function to validate year input
 function validateYear(year) {
     const currentYear = new Date().getFullYear();
@@ -233,12 +294,13 @@ function validateYear(year) {
     }
     
     // Check for secret codes first, using the original input string
-    const inputString = yearInput.value;
+    const inputString = yearInput.value.toUpperCase();
     if (secretCodes[inputString]) {
         const secretCode = secretCodes[inputString];
         return {
             isValid: true,
             isSecretCode: true,
+            isSelfDestruct: secretCode.isSelfDestruct,
             message: typeof secretCode === 'string' ? secretCode : secretCode.message,
             ascii: typeof secretCode === 'string' ? null : secretCode.ascii
         };
@@ -292,6 +354,12 @@ async function handleYearSelection() {
         setTimeout(() => yearInput.classList.remove('shake'), 300);
         
         await typeText(validation.message);
+        return;
+    }
+    
+    // Handle self-destruct sequence
+    if (validation.isSelfDestruct) {
+        await handleSelfDestruct();
         return;
     }
     
