@@ -32,6 +32,68 @@
     100% { opacity: 0.98; }
 }
 
+@keyframes glitch {
+    0% {
+        transform: translate(0);
+        text-shadow: 0.05em 0 0 #00fffc, -0.03em -0.04em 0 #fc00ff,
+                     0.025em 0.04em 0 #fffc00;
+    }
+    15% {
+        transform: translate(0);
+        text-shadow: 0.05em 0 0 #00fffc, -0.03em -0.04em 0 #fc00ff,
+                     0.025em 0.04em 0 #fffc00;
+    }
+    16% {
+        transform: translate(-0.05em, 0.025em);
+        text-shadow: -0.05em -0.025em 0 #00fffc, 0.025em 0.035em 0 #fc00ff,
+                     -0.05em -0.05em 0 #fffc00;
+    }
+    49% {
+        transform: translate(-0.05em, 0.025em);
+        text-shadow: -0.05em -0.025em 0 #00fffc, 0.025em 0.035em 0 #fc00ff,
+                     -0.05em -0.05em 0 #fffc00;
+    }
+    50% {
+        transform: translate(0.05em, -0.025em);
+        text-shadow: 0.025em 0.05em 0 #00fffc, 0.05em 0 0 #fc00ff,
+                     0 -0.05em 0 #fffc00;
+    }
+    99% {
+        transform: translate(0.05em, -0.025em);
+        text-shadow: 0.025em 0.05em 0 #00fffc, 0.05em 0 0 #fc00ff,
+                     0 -0.05em 0 #fffc00;
+    }
+    100% {
+        transform: translate(0);
+        text-shadow: -0.025em 0 0 #00fffc, -0.025em -0.025em 0 #fc00ff,
+                     -0.025em -0.05em 0 #fffc00;
+    }
+}
+
+.glitch {
+    animation: glitch 300ms infinite;
+}
+
+.glitch span {
+    animation: glitch 300ms infinite;
+}
+
+.glitch span:nth-child(odd) {
+    animation-delay: 150ms;
+}
+
+.glitch span:nth-child(3n) {
+    animation-delay: 100ms;
+}
+
+.glitch span:nth-child(3n+1) {
+    animation-delay: 200ms;
+}
+
+.glitch span:nth-child(3n+2) {
+    animation-delay: 300ms;
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -135,7 +197,7 @@ input[type="number"] {
     padding: 8px 12px;
     font-size: 16px;
     border-radius: 3px;
-    width: 120px;
+    width: 180px;
     text-shadow: 0 0 5px #00ff00;
     box-shadow: 0 0 5px rgba(0, 255, 0, 0.3);
 }
