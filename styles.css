@@ -154,7 +154,6 @@ body::before {
     flex: 1;
     background-color: #000;
     border: 2px solid #00ff00;
-    border-radius: 20px;
     padding: 20px;
     margin-bottom: 20px;
     overflow-y: auto;
@@ -205,7 +204,6 @@ body::before {
     padding: 15px;
     background-color: #000;
     border: 2px solid #00ff00;
-    border-radius: 10px;
     box-shadow: 0 0 15px rgba(0, 255, 0, 0.2);
     position: relative;
     z-index: 3;
@@ -284,9 +282,9 @@ button:hover {
 /* Self-destruct sequence effects */
 @keyframes selfDestructShake {
     0%, 100% { transform: translate(0, 0); }
-    25% { transform: translate(-5px, -5px); }
-    50% { transform: translate(5px, 5px); }
-    75% { transform: translate(-5px, 5px); }
+    25% { transform: translate(-1px, -1px); }
+    50% { transform: translate(1px, 1px); }
+    75% { transform: translate(-1px, 1px); }
 }
 
 body.self-destruct {
@@ -335,4 +333,33 @@ body.shutdown * {
     z-index: 9999;
     width: 100%;
     text-align: center;
+}
+
+/* Cryptic hints styling */
+.cryptic-hint {
+    position: fixed;
+    bottom: 36px;
+    right: 40px;
+    color: #00ff00;
+    text-shadow: 0 0 5px #00ff00;
+    font-size: 14px;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+    font-style: italic;
+    z-index: 1000;
+    text-align: right;
+    min-width: 400px;
+    max-width: 600px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    background-color: rgba(0, 0, 0, 0.7);
+    padding: 10px 20px;
+    border-radius: 5px;
+    border: 1px solid #00ff00;
+    box-shadow: 0 0 10px rgba(0, 255, 0, 0.2);
+}
+
+.cryptic-hint.visible {
+    opacity: 1;
 } 

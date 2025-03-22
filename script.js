@@ -250,7 +250,7 @@ async function handleSelfDestruct() {
     terminal.insertBefore(countdownDiv, cursor);
     
     // Countdown from 5
-    for (let i = 5; i > 0; i--) {
+    for (let i = 3; i > 0; i--) {
         countdownDiv.textContent = i;
         await new Promise(resolve => setTimeout(resolve, 1000));
     }
@@ -465,4 +465,63 @@ yearInput.addEventListener('input', (e) => {
             yearInput.setCustomValidity('');
         }
     }
+});
+
+// Cryptic hints system
+const crypticHints = [
+    "Some secrets are hidden in numbers...",
+    "Some years holds special meaning...",
+    "Emergency protocols can be triggered...",
+    "Certain numbers unlock hidden messages...",
+    "The past holds many secrets...",
+    "Time travel isn't the only mystery...",
+    "Some codes are more destructive than others...",
+    "Numbers can be more than just years...",
+    "The future isn't the only destination...",
+    "Hidden messages await discovery..."
+];
+
+let hintTimeout;
+let currentHint = null;
+
+function showRandomHint() {
+    // Clear any existing hint
+    if (currentHint) {
+        currentHint.remove();
+    }
+    
+    // Create new hint element
+    const hint = document.createElement('div');
+    hint.className = 'cryptic-hint';
+    hint.textContent = crypticHints[Math.floor(Math.random() * crypticHints.length)];
+    document.body.appendChild(hint);
+    currentHint = hint;
+    
+    // Show hint with fade in
+    setTimeout(() => hint.classList.add('visible'), 100);
+    
+    // Hide hint after 5 seconds
+    setTimeout(() => {
+        hint.classList.remove('visible');
+        setTimeout(() => hint.remove(), 500);
+    }, 5000);
+}
+
+function scheduleNextHint() {
+    // Random delay between 15-20 seconds for testing
+    const delay = Math.floor(Math.random() * (20000 - 15000) + 15000);
+    hintTimeout = setTimeout(() => {
+        showRandomHint();
+        scheduleNextHint();
+    }, delay);
+}
+
+// Start the hint system when the page loads
+document.addEventListener('DOMContentLoaded', () => {
+    // Initial delay before first hint (10 seconds for testing)
+    const initialDelay = 10000;
+    setTimeout(() => {
+        showRandomHint();
+        scheduleNextHint();
+    }, initialDelay);
 }); 
