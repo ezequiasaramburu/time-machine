@@ -6,11 +6,62 @@ const nextEventBtn = document.getElementById('nextEventBtn');
 
 // Secret codes and their messages
 const secretCodes = {
-    "1337": "H4ck the pl4n3t!",
-    "42": "The answer to life, the universe, and everything.",
-    "1985": "Great Scott! You've discovered the time machine's secret code!",
-    "2001": "I'm sorry Dave, I'm afraid I can't do that...",
-    "007": "Shaken, not stirred."
+    "1337": {
+        message: "H4ck the pl4n3t!",
+        ascii: `
+    ██╗  ██╗ █████╗  ██████╗██╗  ██╗
+    ██║  ██║██╔══██╗██╔════╝██║ ██╔╝
+    ███████║███████║██║     █████╔╝ 
+    ██╔══██║██╔══██║██║     ██╔═██╗ 
+    ██║  ██║██║  ██║╚██████╗██║  ██╗
+    ╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝`
+    },
+    "42": {
+        message: "The answer to life, the universe, and everything.",
+        ascii: `
+        *    .  *       .    *    .        .  *    *
+     .    *    '  .      *     .     *   .    .  *
+    .    *        \  ^  /    .     .    *   .     .
+        .     *    (o o)        *  .    .     *  .
+     *      .     (  v  )  .        .      .        *
+       .     *     --^--   *    .       *   .    .
+    * * * DON'T PANIC! * * * DEEP THOUGHT * * *`
+    },
+    "1985": {
+        message: "Great Scott! You've discovered the time machine's secret code!",
+        ascii: `
+            _______________________
+           /      _________      /\\
+         _/      /  ___   \\    / /\\
+      __/       /  /   \\   \\  / / /
+     /  \\      /  /     \\   \\/ / /
+    /    \\____/__/_______\\___/ / /
+    \\    / DMC-12 DELOREAN    \\/
+     \\  /    \\___________/     \\
+      \\/___________________[O]__\\
+           [][][]   [][][]   []
+              88 MPH ->->->
+    * * * FLUX CAPACITOR ACTIVATED * * *`
+    },
+    "2001": {
+        message: "I'm sorry Dave, I'm afraid I can't do that...",
+        ascii: `
+      ╭──────────────╮
+     ╭│              │╮
+    ╭││  [HAL 9000]  ││╮
+   ╭│││    ╭────╮    │││╮
+  ╭││││    │  ● │    ││││╮
+ ╭│││││    ╰────╯    │││││╮
+╭││││││              ││││││╮
+╰││││││              ││││││╯
+ ╰│││││              │││││╯
+  ╰││││              ││││╯
+   ╰│││              │││╯
+    ╰││              ││╯
+     ╰│              │╯
+      ╰──────────────╯
+    * * * HAL 9000 * * *`
+    },
 };
 
 // Animation settings
@@ -66,7 +117,7 @@ function stopTypewriterSound() {
 }
 
 // Function to type text with animation
-async function typeText(text, isSecret = false) {
+async function typeText(text, isSecret = false, ascii = null) {
     if (isTyping) return;
     isTyping = true;
     
@@ -105,6 +156,20 @@ async function typeText(text, isSecret = false) {
     // Start typewriter sound
     currentTypewriterSound = typewriterSound.cloneNode();
     currentTypewriterSound.play();
+    
+    // If there's ASCII art, display it first
+    if (ascii) {
+        const asciiDiv = document.createElement('div');
+        asciiDiv.style.textAlign = 'center';
+        asciiDiv.style.whiteSpace = 'pre';
+        asciiDiv.style.fontFamily = 'monospace';
+        asciiDiv.style.marginBottom = '20px';
+        asciiDiv.style.color = 'cyan';
+        asciiDiv.style.textShadow = '0px 0px 5px cyan';
+        asciiDiv.textContent = ascii;
+        terminal.insertBefore(asciiDiv, cursor);
+        await new Promise(resolve => setTimeout(resolve, 500));
+    }
     
     // Type new text with appropriate speed and styling
     const typingSpeed = isSecret ? SECRET_TYPING_SPEED : TYPING_SPEED;
@@ -170,10 +235,12 @@ function validateYear(year) {
     // Check for secret codes first, using the original input string
     const inputString = yearInput.value;
     if (secretCodes[inputString]) {
+        const secretCode = secretCodes[inputString];
         return {
             isValid: true,
             isSecretCode: true,
-            message: secretCodes[inputString]
+            message: typeof secretCode === 'string' ? secretCode : secretCode.message,
+            ascii: typeof secretCode === 'string' ? null : secretCode.ascii
         };
     }
     
@@ -259,7 +326,7 @@ async function handleYearSelection() {
     
     // Show the appropriate message
     if (validation.isSecretCode) {
-        await typeText(validation.message, true);
+        await typeText(validation.message, true, validation.ascii);
     } else {
         const event = historicalEvents[year];
         if (event) {
