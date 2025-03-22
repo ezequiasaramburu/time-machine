@@ -6,7 +6,7 @@ const nextEventBtn = document.getElementById('nextEventBtn');
 
 // Secret codes and their messages
 const secretCodes = {
-    "000000": {
+    "01000101": {
         message: "SPEEDRUN MODE ACTIVATED\nDisplaying all historical events...",
         isSpeedrun: true
     },
@@ -394,6 +394,22 @@ async function handleSpeedrunMode() {
     
     // Add the container to the terminal
     terminal.insertBefore(speedrunContainer, cursor);
+    
+    // Wait for 10 seconds
+    await new Promise(resolve => setTimeout(resolve, 25000));
+    
+    // Clear terminal and show deactivation message
+    clearTerminal();
+    await typeText("SPEEDRUN MODE DEACTIVATED\nReturning to normal operation...", 50);
+    
+    // Wait for 2 seconds
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    
+    // Clear terminal one final time
+    clearTerminal();
+    
+    // Clear the input field
+    yearInput.value = '';
 }
 
 // Function to handle year selection
