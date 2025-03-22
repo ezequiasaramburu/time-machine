@@ -536,8 +536,12 @@ nextEventBtn.addEventListener('click', handleNextEvent);
 // Add input validation on change
 yearInput.addEventListener('input', (e) => {
     const year = parseInt(e.target.value);
+    const validation = validateYear(year);
+    
+    // Disable next event button if input is empty or invalid
+    nextEventBtn.disabled = !e.target.value || !validation.isValid;
+    
     if (year) {
-        const validation = validateYear(year);
         if (!validation.isValid) {
             yearInput.setCustomValidity(validation.message);
         } else {
@@ -545,6 +549,9 @@ yearInput.addEventListener('input', (e) => {
         }
     }
 });
+
+// Set initial disabled state of next event button
+nextEventBtn.disabled = true;
 
 // Cryptic hints system
 const crypticHints = [
