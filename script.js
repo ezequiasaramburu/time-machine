@@ -6,6 +6,10 @@ const nextEventBtn = document.getElementById('nextEventBtn');
 
 // Secret codes and their messages
 const secretCodes = {
+    "000000": {
+        message: "SPEEDRUN MODE ACTIVATED\nDisplaying all historical events...",
+        isSpeedrun: true
+    },
     "9999": {
         message: "WARNING! SYSTEM OVERLOAD\nINITIATING EMERGENCY SHUTDOWN...",
         isSelfDestruct: true
@@ -294,13 +298,14 @@ function validateYear(year) {
     }
     
     // Check for secret codes first, using the original input string
-    const inputString = yearInput.value.toUpperCase();
+    const inputString = yearInput.value;
     if (secretCodes[inputString]) {
         const secretCode = secretCodes[inputString];
         return {
             isValid: true,
             isSecretCode: true,
             isSelfDestruct: secretCode.isSelfDestruct,
+            isSpeedrun: secretCode.isSpeedrun,
             message: typeof secretCode === 'string' ? secretCode : secretCode.message,
             ascii: typeof secretCode === 'string' ? null : secretCode.ascii
         };
@@ -339,6 +344,58 @@ function findNextEvent(currentYear) {
     return null;
 }
 
+// Function to handle speedrun mode
+async function handleSpeedrunMode() {
+    // Clear terminal
+    clearTerminal();
+    
+    // Display speedrun activation message
+    await typeText("SPEEDRUN MODE ACTIVATED\nDisplaying all historical events...", 50);
+    
+    // Create speedrun container
+    const speedrunContainer = document.createElement('div');
+    speedrunContainer.className = 'speedrun-mode';
+    
+    // Sort events by year
+    const sortedYears = Object.keys(historicalEvents)
+        .map(Number)
+        .sort((a, b) => a - b);
+    
+    // Add each event to the container
+    sortedYears.forEach(year => {
+        const eventDiv = document.createElement('div');
+        eventDiv.className = 'speedrun-item';
+        
+        // Add dot
+        const dot = document.createElement('span');
+        dot.className = 'speedrun-dot';
+        dot.textContent = '•';
+        eventDiv.appendChild(dot);
+        
+        // Add content
+        const content = document.createElement('div');
+        content.className = 'speedrun-content';
+        
+        // Add year
+        const yearDiv = document.createElement('div');
+        yearDiv.className = 'speedrun-year';
+        yearDiv.textContent = year;
+        content.appendChild(yearDiv);
+        
+        // Add event
+        const eventText = document.createElement('div');
+        eventText.className = 'speedrun-event';
+        eventText.textContent = historicalEvents[year];
+        content.appendChild(eventText);
+        
+        eventDiv.appendChild(content);
+        speedrunContainer.appendChild(eventDiv);
+    });
+    
+    // Add the container to the terminal
+    terminal.insertBefore(speedrunContainer, cursor);
+}
+
 // Function to handle year selection
 async function handleYearSelection() {
     // Play click sound
@@ -360,6 +417,12 @@ async function handleYearSelection() {
     // Handle self-destruct sequence
     if (validation.isSelfDestruct) {
         await handleSelfDestruct();
+        return;
+    }
+    
+    // Handle speedrun mode
+    if (validation.isSpeedrun) {
+        await handleSpeedrunMode();
         return;
     }
     

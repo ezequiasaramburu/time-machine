@@ -362,4 +362,40 @@ body.shutdown * {
 
 .cryptic-hint.visible {
     opacity: 1;
+}
+
+/* Speedrun mode styles */
+.speedrun-mode {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.speedrun-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 5px 0;
+}
+
+.speedrun-dot {
+    color: #00ff00;
+    text-shadow: 0 0 5px #00ff00;
+    font-size: 12px;
+    margin-top: 8px;
+}
+
+.speedrun-content {
+    flex: 1;
+}
+
+.speedrun-year {
+    color: #00ff00;
+    font-weight: bold;
+    margin-bottom: 2px;
+}
+
+.speedrun-event {
+    color: #00ff00;
+    opacity: 0.9;
 } 
