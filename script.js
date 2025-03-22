@@ -412,6 +412,64 @@ async function handleSpeedrunMode() {
     yearInput.value = '';
 }
 
+// Add counter for next event button
+let nextEventUsageCount = 0;
+const MAX_NEXT_EVENT_USES = 5;
+
+// Function to handle next event
+async function handleNextEvent() {
+    // Check if we've reached the maximum uses
+    if (nextEventUsageCount >= MAX_NEXT_EVENT_USES) {
+        await typeText('Maximum consecutive uses reached. Please enter a new year to continue.');
+        return;
+    }
+
+    // Play click sound
+    clickSound.currentTime = 0;
+    clickSound.play();
+    
+    const currentYear = parseInt(yearInput.value) || 1900;
+    const nextEvent = findNextEvent(currentYear);
+    
+    if (nextEvent) {
+        yearInput.value = nextEvent.year;
+        
+        // Add CRT flicker effect
+        terminal.classList.add('crt-flicker');
+        await new Promise(resolve => setTimeout(resolve, 100));
+        terminal.classList.remove('crt-flicker');
+        
+        // Fade out current content
+        terminal.classList.add('fade-out');
+        await new Promise(resolve => setTimeout(resolve, 300));
+        
+        // Clear terminal and show processing message
+        clearTerminal();
+        terminal.classList.remove('fade-out');
+        terminal.classList.add('fade-in');
+        
+        // Show processing message
+        const processingMessage = "Loading next event...";
+        for (let i = 0; i < processingMessage.length; i++) {
+            const char = document.createElement('span');
+            char.textContent = processingMessage[i];
+            terminal.insertBefore(char, cursor);
+            await new Promise(resolve => setTimeout(resolve, TYPING_SPEED));
+        }
+        
+        // Wait a moment
+        await new Promise(resolve => setTimeout(resolve, 500));
+        
+        // Show the next event
+        await typeText(nextEvent.event);
+        
+        // Increment usage counter
+        nextEventUsageCount++;
+    } else {
+        await typeText('No more events available.');
+    }
+}
+
 // Function to handle year selection
 async function handleYearSelection() {
     // Play click sound
@@ -440,6 +498,11 @@ async function handleYearSelection() {
     if (validation.isSpeedrun) {
         await handleSpeedrunMode();
         return;
+    }
+    
+    // Reset next event usage counter when a valid year is entered
+    if (historicalEvents[year]) {
+        nextEventUsageCount = 0;
     }
     
     // Add CRT flicker effect
@@ -481,51 +544,6 @@ async function handleYearSelection() {
         } else {
             await typeText('No data available. Please try another year.');
         }
-    }
-}
-
-// Function to handle next event
-async function handleNextEvent() {
-    // Play click sound
-    clickSound.currentTime = 0;
-    clickSound.play();
-    
-    const currentYear = parseInt(yearInput.value) || 1900;
-    const nextEvent = findNextEvent(currentYear);
-    
-    if (nextEvent) {
-        yearInput.value = nextEvent.year;
-        
-        // Add CRT flicker effect
-        terminal.classList.add('crt-flicker');
-        await new Promise(resolve => setTimeout(resolve, 100));
-        terminal.classList.remove('crt-flicker');
-        
-        // Fade out current content
-        terminal.classList.add('fade-out');
-        await new Promise(resolve => setTimeout(resolve, 300));
-        
-        // Clear terminal and show processing message
-        clearTerminal();
-        terminal.classList.remove('fade-out');
-        terminal.classList.add('fade-in');
-        
-        // Show processing message
-        const processingMessage = "Loading next event...";
-        for (let i = 0; i < processingMessage.length; i++) {
-            const char = document.createElement('span');
-            char.textContent = processingMessage[i];
-            terminal.insertBefore(char, cursor);
-            await new Promise(resolve => setTimeout(resolve, TYPING_SPEED));
-        }
-        
-        // Wait a moment
-        await new Promise(resolve => setTimeout(resolve, 500));
-        
-        // Show the next event
-        await typeText(nextEvent.event);
-    } else {
-        await typeText('No more events available.');
     }
 }
 
