@@ -94,6 +94,26 @@
     animation-delay: 300ms;
 }
 
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+
+@keyframes crtFlicker {
+    0% { filter: brightness(1); }
+    50% { filter: brightness(0.95); }
+    100% { filter: brightness(1); }
+}
+
+.shake {
+    animation: shake 0.3s ease-in-out;
+}
+
+.crt-flicker {
+    animation: crtFlicker 0.1s ease-in-out;
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -143,6 +163,7 @@ body::before {
     position: relative;
     box-shadow: 0 0 20px rgba(0, 255, 0, 0.2);
     animation: flicker 0.15s infinite;
+    transition: opacity 0.3s ease-in-out;
 }
 
 #terminal::before {
@@ -239,4 +260,12 @@ button:hover {
 /* Text glow effect */
 #terminal, input, button {
     text-shadow: 0 0 5px #00ff00;
+}
+
+.fade-out {
+    opacity: 0;
+}
+
+.fade-in {
+    opacity: 1;
 } 
