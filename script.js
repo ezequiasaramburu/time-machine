@@ -4,6 +4,15 @@ const yearInput = document.getElementById('yearInput');
 const travelBtn = document.getElementById('travelBtn');
 const nextEventBtn = document.getElementById('nextEventBtn');
 
+// Secret codes and their messages
+const secretCodes = {
+    "1337": "H4ck the pl4n3t!",
+    "42": "The answer to life, the universe, and everything.",
+    "1985": "Great Scott! You've discovered the time machine's secret code!",
+    "2001": "I'm sorry Dave, I'm afraid I can't do that...",
+    "007": "Shaken, not stirred."
+};
+
 // Animation settings
 const TYPING_SPEED = 50; // milliseconds per character
 const BACKSPACE_SPEED = 30; // milliseconds per character
@@ -153,6 +162,17 @@ function validateYear(year) {
         };
     }
     
+    // Check for secret codes first, using the original input string
+    const inputString = yearInput.value;
+    if (secretCodes[inputString]) {
+        return {
+            isValid: true,
+            isSecretCode: true,
+            message: secretCodes[inputString]
+        };
+    }
+    
+    // For regular year validation, use the parsed number
     if (year < minYear) {
         return {
             isValid: false,
@@ -218,7 +238,10 @@ async function handleYearSelection() {
     terminal.classList.add('fade-in');
     
     // Show processing message
-    const processingMessage = "Processing travel request...";
+    const processingMessage = validation.isSecretCode ? 
+        "Decoding secret message..." : 
+        "Processing travel request...";
+    
     for (let i = 0; i < processingMessage.length; i++) {
         const char = document.createElement('span');
         char.textContent = processingMessage[i];
@@ -229,12 +252,16 @@ async function handleYearSelection() {
     // Wait a moment
     await new Promise(resolve => setTimeout(resolve, 500));
     
-    // Clear processing message and show event
-    const event = historicalEvents[year];
-    if (event) {
-        await typeText(event);
+    // Show the appropriate message
+    if (validation.isSecretCode) {
+        await typeText(validation.message);
     } else {
-        await typeText('No data available. Please try another year.');
+        const event = historicalEvents[year];
+        if (event) {
+            await typeText(event);
+        } else {
+            await typeText('No data available. Please try another year.');
+        }
     }
 }
 
