@@ -268,7 +268,7 @@ async function handleSelfDestruct() {
     document.body.classList.add('shutdown');
     
     // Wait for 2 seconds in black screen
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    await new Promise(resolve => setTimeout(resolve, 3000));
     
     // Remove shutdown class
     document.body.classList.remove('shutdown');
@@ -443,22 +443,10 @@ async function handleNextEvent() {
         terminal.classList.add('fade-out');
         await new Promise(resolve => setTimeout(resolve, 300));
         
-        // Clear terminal and show processing message
+        // Clear terminal
         clearTerminal();
         terminal.classList.remove('fade-out');
         terminal.classList.add('fade-in');
-        
-        // Show processing message
-        const processingMessage = "Loading next event...";
-        for (let i = 0; i < processingMessage.length; i++) {
-            const char = document.createElement('span');
-            char.textContent = processingMessage[i];
-            terminal.insertBefore(char, cursor);
-            await new Promise(resolve => setTimeout(resolve, TYPING_SPEED));
-        }
-        
-        // Wait a moment
-        await new Promise(resolve => setTimeout(resolve, 500));
         
         // Show the next event
         await typeText(nextEvent.event);
@@ -514,25 +502,10 @@ async function handleYearSelection() {
     terminal.classList.add('fade-out');
     await new Promise(resolve => setTimeout(resolve, 300));
     
-    // Clear terminal and show processing message
+    // Clear terminal
     clearTerminal();
     terminal.classList.remove('fade-out');
     terminal.classList.add('fade-in');
-    
-    // Show processing message
-    const processingMessage = validation.isSecretCode ? 
-        "Decoding secret message..." : 
-        "Processing travel request...";
-    
-    for (let i = 0; i < processingMessage.length; i++) {
-        const char = document.createElement('span');
-        char.textContent = processingMessage[i];
-        terminal.insertBefore(char, cursor);
-        await new Promise(resolve => setTimeout(resolve, TYPING_SPEED));
-    }
-    
-    // Wait a moment
-    await new Promise(resolve => setTimeout(resolve, 500));
     
     // Show the appropriate message
     if (validation.isSecretCode) {
