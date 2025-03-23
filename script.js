@@ -53,11 +53,11 @@ animateCounter(visitorCount);
 
 // Secret codes and their messages
 const secretCodes = {
-    [process.env.NEXT_PUBLIC_SECRET_CODE_1]: {
+    [window.APP_CONFIG.secretCodes.code1]: {
         message: "WARNING! SYSTEM OVERLOAD\nINITIATING EMERGENCY SHUTDOWN...",
         isSelfDestruct: true
     },
-    [process.env.NEXT_PUBLIC_SECRET_CODE_2]: {
+    [window.APP_CONFIG.secretCodes.code2]: {
         message: "H4ck the pl4n3t!",
         ascii: `
     ██╗  ██╗ █████╗  ██████╗██╗  ██╗
@@ -67,7 +67,7 @@ const secretCodes = {
     ██║  ██║██║  ██║╚██████╗██║  ██║
     ╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝`
     },
-    [process.env.NEXT_PUBLIC_SECRET_CODE_3]: {
+    [window.APP_CONFIG.secretCodes.code3]: {
         message: "The answer to life, the universe, and everything.",
         ascii: `
         *    .  *       .    *    .        .  *    *
@@ -78,7 +78,7 @@ const secretCodes = {
        .     *     --^--   *    .       *   .    .
     * * * DON'T PANIC! * * * DEEP THOUGHT * * *`
     },
-    [process.env.NEXT_PUBLIC_SECRET_CODE_4]: {
+    [window.APP_CONFIG.secretCodes.code4]: {
         message: "Great Scott! You've discovered the time machine's secret code!",
         ascii: `
             _______________________
@@ -94,7 +94,7 @@ const secretCodes = {
               88 MPH ->->->
     * * * FLUX CAPACITOR ACTIVATED * * *`
     },
-    [process.env.NEXT_PUBLIC_SECRET_CODE_5]: {
+    [window.APP_CONFIG.secretCodes.code5]: {
         message: "I'm sorry Dave, I'm afraid I can't do that...",
         ascii: `
               ╭──────────────╮
