@@ -247,47 +247,23 @@ async function handleSelfDestruct() {
     displayEventsList();
 }
 
-// Function to validate year input
-function validateYear(year) {
-    const currentYear = new Date().getFullYear();
-    const minYear = 1936;
-    
-    if (isNaN(year)) {
-        return {
-            isValid: false,
-            message: 'Please enter a valid number.'
-        };
+// Function to validate code with server
+async function validateCode(code) {
+    try {
+        const response = await fetch('/api/validate-code', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ code })
+        });
+        
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('Error validating code:', error);
+        return { isValid: false, message: 'Error validating code' };
     }
-    
-    // Check for secret codes first, using the original input string
-    const inputString = yearInput.value;
-    if (secretCodes[inputString]) {
-        const secretCode = secretCodes[inputString];
-        return {
-            isValid: true,
-            isSecretCode: true,
-            isSelfDestruct: secretCode.isSelfDestruct,
-            message: typeof secretCode === 'string' ? secretCode : secretCode.message,
-            ascii: typeof secretCode === 'string' ? null : secretCode.ascii
-        };
-    }
-    
-    // For regular year validation, use the parsed number
-    if (year < minYear) {
-        return {
-            isValid: false,
-            message: `Please enter a year after ${minYear - 1}.`
-        };
-    }
-    
-    if (year > currentYear) {
-        return {
-            isValid: false,
-            message: `Please enter a year before ${currentYear + 1}.`
-        };
-    }
-    
-    return { isValid: true };
 }
 
 // Function to display the complete list of events
@@ -375,6 +351,35 @@ async function showEventDetails(year) {
     updateBackButtonVisibility();
 }
 
+// Function to validate year input
+function validateYear(year) {
+    const currentYear = new Date().getFullYear();
+    const minYear = 1936;
+    
+    if (isNaN(year)) {
+        return {
+            isValid: false,
+            message: 'Please enter a valid number.'
+        };
+    }
+    
+    if (year < minYear) {
+        return {
+            isValid: false,
+            message: `Please enter a year after ${minYear - 1}.`
+        };
+    }
+    
+    if (year > currentYear) {
+        return {
+            isValid: false,
+            message: `Please enter a year before ${currentYear + 1}.`
+        };
+    }
+    
+    return { isValid: true };
+}
+
 // Function to handle year selection
 async function handleYearSelection() {
     const year = parseInt(yearInput.value);
@@ -386,12 +391,6 @@ async function handleYearSelection() {
         setTimeout(() => yearInput.classList.remove('shake'), 300);
         
         await typeText(validation.message);
-        return;
-    }
-    
-    // Handle self-destruct sequence
-    if (validation.isSelfDestruct) {
-        await handleSelfDestruct();
         return;
     }
     
@@ -409,25 +408,45 @@ async function handleYearSelection() {
     terminal.classList.remove('fade-out');
     terminal.classList.add('fade-in');
     
-    // Show the appropriate message
-    if (validation.isSecretCode) {
+    const event = historicalEvents[year];
+    if (event) {
+        await showEventDetails(year);
+    } else {
+        await typeText('No data available. Please try another year.');
         isTimelineView = false;
         updateBackButtonVisibility();
-        await typeText(validation.message, true, validation.ascii);
-    } else {
-        const event = historicalEvents[year];
-        if (event) {
-            await showEventDetails(year);
+    }
+}
+
+// Event listeners
+travelBtn.addEventListener('click', async () => {
+    const input = yearInput.value.trim();
+    if (input) {
+        const year = parseInt(input);
+        const validation = validateYear(year);
+        
+        if (validation.isValid) {
+            await handleYearSelection();
+        } else if (input.length === 5) {
+            const result = await validateCode(input);
+            if (result.isValid) {
+                await typeText(result.message, true, result.ascii);
+                if (result.isSelfDestruct) {
+                    await handleSelfDestruct();
+                }
+            } else {
+                await typeText(result.message);
+                isTimelineView = false;
+                updateBackButtonVisibility();
+            }
         } else {
-            await typeText('No data available. Please try another year.');
+            await typeText(validation.message);
             isTimelineView = false;
             updateBackButtonVisibility();
         }
     }
-}
+});
 
-// Add event listeners
-travelBtn.addEventListener('click', handleYearSelection);
 backToTimelineBtn.addEventListener('click', () => {
     clearTerminal();
     displayEventsList();
