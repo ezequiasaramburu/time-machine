@@ -1,0 +1,11 @@
+{
+  "name": "time-machine",
+  "version": "1.0.0",
+  "description": "Interactive Historical Events Explorer",
+  "scripts": {
+    "build": "node scripts/build-config.js"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+} 

@@ -1,4 +1,6 @@
 {
+  "version": 2,
   "buildCommand": "node scripts/build-config.js",
-  "outputDirectory": "dist"
+  "outputDirectory": "dist",
+  "installCommand": "npm install"
 } 

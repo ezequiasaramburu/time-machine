@@ -1,6 +1,12 @@
 const fs = require('fs');
 const path = require('path');
 
+// Create dist directory if it doesn't exist
+const distDir = path.join(__dirname, '..', 'dist');
+if (!fs.existsSync(distDir)) {
+    fs.mkdirSync(distDir);
+}
+
 // Read the index.html file
 const indexPath = path.join(__dirname, '..', 'index.html');
 let html = fs.readFileSync(indexPath, 'utf8');
@@ -26,7 +32,24 @@ const configScript = `
 // Replace the placeholder with the config script
 html = html.replace('<!-- APP_CONFIG_PLACEHOLDER -->', configScript);
 
-// Write the modified HTML back to the file
-fs.writeFileSync(indexPath, html);
+// Write the modified HTML to dist directory
+fs.writeFileSync(path.join(distDir, 'index.html'), html);
 
-console.log('Configuration injected successfully!'); 
+// Copy other necessary files to dist directory
+const filesToCopy = [
+    'styles.css',
+    'script.js',
+    'data.js',
+    'favicon.svg',
+    'site.webmanifest'
+];
+
+filesToCopy.forEach(file => {
+    const sourcePath = path.join(__dirname, '..', file);
+    const destPath = path.join(distDir, file);
+    if (fs.existsSync(sourcePath)) {
+        fs.copyFileSync(sourcePath, destPath);
+    }
+});
+
+console.log('Build completed successfully!'); 
