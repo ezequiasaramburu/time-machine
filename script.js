@@ -425,10 +425,11 @@ travelBtn.addEventListener('click', async () => {
         // First try to validate as a secret code
         const result = await validateCode(input);
         if (result.isValid) {
-            await typeText(result.message, true, result.ascii);
             if (result.isSelfDestruct) {
                 await handleSelfDestruct();
+                return;
             }
+            await typeText(result.message, true, result.ascii);
             return;
         }
 
