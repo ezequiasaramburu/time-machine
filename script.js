@@ -422,23 +422,22 @@ async function handleYearSelection() {
 travelBtn.addEventListener('click', async () => {
     const input = yearInput.value.trim();
     if (input) {
+        // First try to validate as a secret code
+        const result = await validateCode(input);
+        if (result.isValid) {
+            await typeText(result.message, true, result.ascii);
+            if (result.isSelfDestruct) {
+                await handleSelfDestruct();
+            }
+            return;
+        }
+
+        // If not a valid secret code, validate as a year
         const year = parseInt(input);
         const validation = validateYear(year);
         
         if (validation.isValid) {
             await handleYearSelection();
-        } else if (input.length === 5) {
-            const result = await validateCode(input);
-            if (result.isValid) {
-                await typeText(result.message, true, result.ascii);
-                if (result.isSelfDestruct) {
-                    await handleSelfDestruct();
-                }
-            } else {
-                await typeText(result.message);
-                isTimelineView = false;
-                updateBackButtonVisibility();
-            }
         } else {
             await typeText(validation.message);
             isTimelineView = false;
