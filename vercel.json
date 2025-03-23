@@ -1,19 +1,13 @@
 {
   "version": 2,
-  "buildCommand": "node scripts/build-config.js",
-  "outputDirectory": "dist",
   "routes": [
     {
       "src": "/api/(.*)",
       "dest": "/api/$1"
     },
     {
-      "src": "/favicon.svg",
-      "dest": "/dist/favicon.svg"
-    },
-    {
       "src": "/(.*)",
-      "dest": "/dist/$1"
+      "dest": "/$1"
     }
   ]
 } 
