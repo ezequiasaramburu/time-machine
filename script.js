@@ -4,6 +4,52 @@ const yearInput = document.getElementById('yearInput');
 const travelBtn = document.getElementById('travelBtn');
 const backToTimelineBtn = document.getElementById('backToTimelineBtn');
 
+// Initialize visitor counter
+const visitorCounter = document.getElementById('visitor-counter');
+let visitorCount = parseInt(localStorage.getItem('visitorCount') || '0');
+visitorCount++;
+localStorage.setItem('visitorCount', visitorCount.toString());
+
+// Create slot machine style counter
+const counterHTML = `
+    <div class="visitor-count">
+        <span class="counter-label">Visitors:</span>
+        <div class="digit-slot">0</div>
+        <div class="digit-slot">0</div>
+        <div class="digit-slot">0</div>
+        <div class="digit-slot">0</div>
+        <div class="digit-slot">0</div>
+    </div>
+`;
+visitorCounter.innerHTML = counterHTML;
+
+// Animate the counter
+function animateCounter(targetNumber) {
+    const slots = document.querySelectorAll('.digit-slot');
+    const targetStr = targetNumber.toString().padStart(5, '0');
+    
+    slots.forEach((slot, index) => {
+        const targetDigit = parseInt(targetStr[index]);
+        let currentDigit = 0;
+        
+        const animate = () => {
+            if (currentDigit === targetDigit) {
+                slot.textContent = currentDigit;
+                return;
+            }
+            
+            currentDigit = (currentDigit + 1) % 10;
+            slot.textContent = currentDigit;
+            setTimeout(animate, 50);
+        };
+        
+        animate();
+    });
+}
+
+// Start the animation
+animateCounter(visitorCount);
+
 // Secret codes and their messages
 const secretCodes = {
     "9999": {
@@ -321,7 +367,7 @@ function validateYear(year) {
     if (year < minYear) {
         return {
             isValid: false,
-            message: `Please enter a year after ${minYear}.`
+            message: `Please enter a year after ${minYear - 1}.`
         };
     }
     
@@ -350,6 +396,7 @@ async function displayEventsList() {
     sortedYears.forEach(year => {
         const eventDiv = document.createElement('div');
         eventDiv.className = 'event-item';
+        eventDiv.onclick = () => showEventDetails(year);
         
         // Add dot
         const dot = document.createElement('span');
@@ -367,10 +414,10 @@ async function displayEventsList() {
         yearDiv.textContent = year;
         content.appendChild(yearDiv);
         
-        // Add event
+        // Add event date and title
         const eventText = document.createElement('div');
         eventText.className = 'event-text';
-        eventText.textContent = historicalEvents[year];
+        eventText.textContent = `${historicalEvents[year].date} - ${historicalEvents[year].title}`;
         content.appendChild(eventText);
         
         eventDiv.appendChild(content);
@@ -380,6 +427,42 @@ async function displayEventsList() {
     // Add the container to the terminal
     terminal.insertBefore(eventsContainer, cursor);
     isTimelineView = true;
+    updateBackButtonVisibility();
+}
+
+async function showEventDetails(year) {
+    const event = historicalEvents[year];
+    const detailsContainer = document.createElement('div');
+    detailsContainer.className = 'event-details';
+    
+    // Create header
+    const header = document.createElement('div');
+    header.className = 'event-details-header';
+    header.innerHTML = `
+        <div class="event-details-year">${year}</div>
+        <div class="event-details-date">${event.date}</div>
+    `;
+    detailsContainer.appendChild(header);
+    
+    // Create title
+    const title = document.createElement('div');
+    title.className = 'event-details-title';
+    title.textContent = event.title;
+    detailsContainer.appendChild(title);
+    
+    // Create impact section
+    const impact = document.createElement('div');
+    impact.className = 'event-details-impact';
+    impact.innerHTML = `
+        <div class="impact-label">Impact:</div>
+        <div class="impact-text">${event.impact}</div>
+    `;
+    detailsContainer.appendChild(impact);
+    
+    // Clear terminal and show details
+    clearTerminal();
+    terminal.insertBefore(detailsContainer, cursor);
+    isTimelineView = false;
     updateBackButtonVisibility();
 }
 
