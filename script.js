@@ -13,7 +13,8 @@ localStorage.setItem('visitorCount', visitorCount.toString());
 // Create slot machine style counter
 const counterHTML = `
     <div class="visitor-count">
-        <span class="counter-label">Visitors:</span>
+        <span class="counter-label">You are visitor</span>
+        <div class="digit-slot">0</div>
         <div class="digit-slot">0</div>
         <div class="digit-slot">0</div>
         <div class="digit-slot">0</div>
@@ -26,7 +27,7 @@ visitorCounter.innerHTML = counterHTML;
 // Animate the counter
 function animateCounter(targetNumber) {
     const slots = document.querySelectorAll('.digit-slot');
-    const targetStr = targetNumber.toString().padStart(5, '0');
+    const targetStr = targetNumber.toString().padStart(6, '0');
     
     slots.forEach((slot, index) => {
         const targetDigit = parseInt(targetStr[index]);
@@ -518,4 +519,4 @@ yearInput.addEventListener('input', (e) => {
 // Display events list when the page loads
 document.addEventListener('DOMContentLoaded', () => {
     displayEventsList();
-}); 
+});
