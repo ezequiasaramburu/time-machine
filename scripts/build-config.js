@@ -7,53 +7,24 @@ if (!fs.existsSync(distDir)) {
     fs.mkdirSync(distDir);
 }
 
-// Read the index.html file
-const indexPath = path.join(__dirname, '..', 'index.html');
-let html = fs.readFileSync(indexPath, 'utf8');
+// Copy index.html to dist
+fs.copyFileSync(
+    path.join(__dirname, '..', 'index.html'),
+    path.join(distDir, 'index.html')
+);
 
-// Create the config object with environment variables
-const config = {
-    secretCodes: {
-        code1: process.env.NEXT_PUBLIC_SECRET_CODE_1,
-        code2: process.env.NEXT_PUBLIC_SECRET_CODE_2,
-        code3: process.env.NEXT_PUBLIC_SECRET_CODE_3,
-        code4: process.env.NEXT_PUBLIC_SECRET_CODE_4,
-        code5: process.env.NEXT_PUBLIC_SECRET_CODE_5
-    }
-};
-
-// Create the config script
-const configScript = `
-    <script>
-        window.APP_CONFIG = ${JSON.stringify(config, null, 2)};
-    </script>
-`;
-
-// Replace the placeholder with the config script
-html = html.replace('<!-- APP_CONFIG_PLACEHOLDER -->', configScript);
-
-// Write the modified HTML to dist directory
-fs.writeFileSync(path.join(distDir, 'index.html'), html);
-
-// Copy the secret codes template to dist directory
-const secretCodesTemplate = fs.readFileSync(path.join(__dirname, 'secret-codes-template.js'), 'utf8');
-fs.writeFileSync(path.join(distDir, 'secret-codes.js'), secretCodesTemplate);
-
-// Copy other necessary files to dist directory
+// Copy other necessary files
 const filesToCopy = [
     'styles.css',
     'script.js',
-    'data.js',
-    'favicon.svg',
-    'site.webmanifest'
+    'data.js'
 ];
 
 filesToCopy.forEach(file => {
-    const sourcePath = path.join(__dirname, '..', file);
-    const destPath = path.join(distDir, file);
-    if (fs.existsSync(sourcePath)) {
-        fs.copyFileSync(sourcePath, destPath);
-    }
+    fs.copyFileSync(
+        path.join(__dirname, '..', file),
+        path.join(distDir, file)
+    );
 });
 
 console.log('Build completed successfully!'); 
