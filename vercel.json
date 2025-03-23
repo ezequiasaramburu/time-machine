@@ -2,7 +2,6 @@
   "version": 2,
   "buildCommand": "node scripts/build-config.js",
   "outputDirectory": "dist",
-  "installCommand": "npm install",
   "routes": [
     {
       "src": "/api/(.*)",
