@@ -53,21 +53,21 @@ animateCounter(visitorCount);
 
 // Secret codes and their messages
 const secretCodes = {
-    "9999": {
+    [process.env.NEXT_PUBLIC_SECRET_CODE_1]: {
         message: "WARNING! SYSTEM OVERLOAD\nINITIATING EMERGENCY SHUTDOWN...",
         isSelfDestruct: true
     },
-    "1337": {
+    [process.env.NEXT_PUBLIC_SECRET_CODE_2]: {
         message: "H4ck the pl4n3t!",
         ascii: `
     ██╗  ██╗ █████╗  ██████╗██╗  ██╗
     ██║  ██║██╔══██╗██╔════╝██║ ██╔╝
     ███████║███████║██║     █████╔╝ 
     ██╔══██║██╔══██║██║     ██╔═██╗ 
-    ██║  ██║██║  ██║╚██████╗██║  ██╗
+    ██║  ██║██║  ██║╚██████╗██║  ██║
     ╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝`
     },
-    "42": {
+    [process.env.NEXT_PUBLIC_SECRET_CODE_3]: {
         message: "The answer to life, the universe, and everything.",
         ascii: `
         *    .  *       .    *    .        .  *    *
@@ -78,7 +78,7 @@ const secretCodes = {
        .     *     --^--   *    .       *   .    .
     * * * DON'T PANIC! * * * DEEP THOUGHT * * *`
     },
-    "88": {
+    [process.env.NEXT_PUBLIC_SECRET_CODE_4]: {
         message: "Great Scott! You've discovered the time machine's secret code!",
         ascii: `
             _______________________
@@ -94,7 +94,7 @@ const secretCodes = {
               88 MPH ->->->
     * * * FLUX CAPACITOR ACTIVATED * * *`
     },
-    "9000": {
+    [process.env.NEXT_PUBLIC_SECRET_CODE_5]: {
         message: "I'm sorry Dave, I'm afraid I can't do that...",
         ascii: `
               ╭──────────────╮
