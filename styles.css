@@ -510,10 +510,9 @@ body.shutdown * {
 }
 
 footer {
-    width: 100%;g
+    width: 100%;
     padding: 20px 0;
     background-color: rgba(0, 0, 0, 0.8);
-    border-top: 1px solid rgba(0, 255, 255, 0.2);
     margin-top: 20px;
 }
 
