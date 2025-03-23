@@ -6,6 +6,15 @@
       "dest": "/api/$1"
     },
     {
+      "src": "/(.*).svg",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "image/svg+xml"
+        }
+      ]
+    },
+    {
       "src": "/(.*)",
       "dest": "/$1"
     }
