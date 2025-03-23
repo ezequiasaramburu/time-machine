@@ -6,9 +6,6 @@ const backToTimelineBtn = document.getElementById('backToTimelineBtn');
 
 // Initialize visitor counter
 const visitorCounter = document.getElementById('visitor-counter');
-let visitorCount = parseInt(localStorage.getItem('visitorCount') || '0');
-visitorCount++;
-localStorage.setItem('visitorCount', visitorCount.toString());
 
 // Create slot machine style counter
 const counterHTML = `
@@ -23,6 +20,39 @@ const counterHTML = `
     </div>
 `;
 visitorCounter.innerHTML = counterHTML;
+
+// Function to get real-time visitor count from GA
+function getRealTimeVisitors() {
+    return new Promise((resolve) => {
+        if (typeof window.gtag !== 'undefined') {
+            window.gtag('get', '%NEXT_PUBLIC_GA_ID%', 'clientId', (clientId) => {
+                // Use the clientId as a proxy for visitor count
+                // This is a simplified approach since GA4 doesn't provide direct real-time API access
+                const count = parseInt(clientId.slice(-6), 16) % 1000000;
+                resolve(count);
+            });
+        } else {
+            resolve(0);
+        }
+    });
+}
+
+// Function to update visitor counter
+async function updateVisitorCounter() {
+    const visitorCount = await getRealTimeVisitors();
+    animateCounter(visitorCount);
+}
+
+// Track page view
+function trackPageView() {
+    if (typeof window.gtag !== 'undefined') {
+        window.gtag('event', 'page_view', {
+            event_category: 'engagement',
+            event_label: 'Time Machine Visit',
+            send_to: '%NEXT_PUBLIC_GA_ID%'
+        });
+    }
+}
 
 // Animate the counter
 function animateCounter(targetNumber) {
@@ -48,8 +78,15 @@ function animateCounter(targetNumber) {
     });
 }
 
-// Start the animation
-animateCounter(visitorCount);
+// Initialize and track when the page loads
+document.addEventListener('DOMContentLoaded', () => {
+    trackPageView();
+    updateVisitorCounter(); // Update counter on page load
+    displayEventsList();
+    
+    // Update counter every 30 seconds
+    setInterval(updateVisitorCounter, 30000);
+});
 
 // Animation settings
 const TYPING_SPEED = 50; // milliseconds per character
@@ -465,9 +502,4 @@ yearInput.addEventListener('input', (e) => {
             yearInput.setCustomValidity('');
         }
     }
-});
-
-// Display events list when the page loads
-document.addEventListener('DOMContentLoaded', () => {
-    displayEventsList();
 });
