@@ -120,16 +120,11 @@ const SECRET_TYPING_SPEED = 30; // faster typing speed for secret messages
 const BACKSPACE_SPEED = 30; // milliseconds per character
 const CURSOR_BLINK_SPEED = 500; // milliseconds
 
-// Sound effects
-const clickSound = new Audio('sounds/click.mp3');
-const typewriterSound = new Audio('sounds/typewriter.mp3');
-typewriterSound.loop = true; // Loop the typewriter sound
 
 // State variables
 let isTyping = false;
 let currentText = '';
 let cursorInterval;
-let currentTypewriterSound = null;
 let isTimelineView = true; // Track if we're showing the timeline
 
 // Add cursor element
@@ -165,22 +160,12 @@ function clearTerminal() {
     updateBackButtonVisibility();
 }
 
-// Function to stop current typewriter sound
-function stopTypewriterSound() {
-    if (currentTypewriterSound) {
-        currentTypewriterSound.pause();
-        currentTypewriterSound.currentTime = 0;
-        currentTypewriterSound = null;
-    }
-}
 
 // Function to type text with animation
 async function typeText(text, isSecret = false, ascii = null) {
     if (isTyping) return;
     isTyping = true;
     
-    // Stop any existing typewriter sound
-    stopTypewriterSound();
     
     // Disable input and buttons while typing
     yearInput.disabled = true;
@@ -216,9 +201,6 @@ async function typeText(text, isSecret = false, ascii = null) {
     terminal.classList.remove('glitch');
     scrambledSpan.remove();
     
-    // Start typewriter sound
-    currentTypewriterSound = typewriterSound.cloneNode();
-    currentTypewriterSound.play();
     
     // If there's ASCII art, display it first
     if (ascii) {
@@ -246,9 +228,6 @@ async function typeText(text, isSecret = false, ascii = null) {
         await new Promise(resolve => setTimeout(resolve, typingSpeed));
     }
     
-    // Stop typewriter sound
-    stopTypewriterSound();
-    
     // Re-enable input and buttons after typing
     yearInput.disabled = false;
     travelBtn.disabled = false;
@@ -259,9 +238,6 @@ async function typeText(text, isSecret = false, ascii = null) {
 async function backspaceText() {
     if (isTyping) return;
     isTyping = true;
-    
-    // Stop any existing typewriter sound
-    stopTypewriterSound();
     
     // Disable input and buttons while backspacing
     yearInput.disabled = true;
@@ -468,10 +444,6 @@ async function showEventDetails(year) {
 
 // Function to handle year selection
 async function handleYearSelection() {
-    // Play click sound
-    clickSound.currentTime = 0;
-    clickSound.play();
-    
     const year = parseInt(yearInput.value);
     const validation = validateYear(year);
     
@@ -512,28 +484,11 @@ async function handleYearSelection() {
     } else {
         const event = historicalEvents[year];
         if (event) {
-            // Create detailed event view
-            const eventDiv = document.createElement('div');
-            eventDiv.className = 'event-detail';
-            
-            // Add year header
-            const yearHeader = document.createElement('h2');
-            yearHeader.textContent = year;
-            yearHeader.className = 'event-year-header';
-            eventDiv.appendChild(yearHeader);
-            
-            // Add event text
-            const eventText = document.createElement('p');
-            eventText.textContent = event;
-            eventText.className = 'event-detail-text';
-            eventDiv.appendChild(eventText);
-            
-            // Add the event detail to the terminal
-            terminal.insertBefore(eventDiv, cursor);
-            isTimelineView = false;
-            updateBackButtonVisibility();
+            await showEventDetails(year);
         } else {
             await typeText('No data available. Please try another year.');
+            isTimelineView = false;
+            updateBackButtonVisibility();
         }
     }
 }
