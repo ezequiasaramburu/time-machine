@@ -35,6 +35,10 @@ html = html.replace('<!-- APP_CONFIG_PLACEHOLDER -->', configScript);
 // Write the modified HTML to dist directory
 fs.writeFileSync(path.join(distDir, 'index.html'), html);
 
+// Copy the secret codes template to dist directory
+const secretCodesTemplate = fs.readFileSync(path.join(__dirname, 'secret-codes-template.js'), 'utf8');
+fs.writeFileSync(path.join(distDir, 'secret-codes.js'), secretCodesTemplate);
+
 // Copy other necessary files to dist directory
 const filesToCopy = [
     'styles.css',
