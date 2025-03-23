@@ -7,12 +7,9 @@
     },
     {
       "src": "/(.*).svg",
-      "headers": [
-        {
-          "key": "Content-Type",
-          "value": "image/svg+xml"
-        }
-      ]
+      "headers": {
+        "Content-Type": "image/svg+xml"
+      }
     },
     {
       "src": "/(.*)",
