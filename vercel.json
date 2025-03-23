@@ -10,10 +10,6 @@
       "headers": {
         "Content-Type": "image/svg+xml"
       }
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/$1"
     }
   ]
 } 
