@@ -1,4 +1,3 @@
-/* CRT Screen Effect */
 
 @keyframes flicker {
     0% { opacity: 0.97; }
@@ -24,25 +23,6 @@
     100% { opacity: 0.98; }
 }
 
-@keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    25% { transform: translateX(-5px); }
-    75% { transform: translateX(5px); }
-}
-
-@keyframes crtFlicker {
-    0% { filter: brightness(1); }
-    50% { filter: brightness(0.95); }
-    100% { filter: brightness(1); }
-}
-
-.shake {
-    animation: shake 0.3s ease-in-out;
-}
-
-.crt-flicker {
-    animation: crtFlicker 0.1s ease-in-out;
-}
 
 * {
     margin: 0;
@@ -320,6 +300,24 @@ body.shutdown * {
 .events-list {
     margin: 20px 0;
     padding: 0 20px;
+    opacity: 1;
+    position: relative;
+}
+
+.events-list::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+        rgba(18, 16, 16, 0) 50%,
+        rgba(0, 0, 0, 0.25) 50%
+    );
+    background-size: 100% 4px;
+    pointer-events: none;
+    z-index: 1;
 }
 
 .event-item {
@@ -330,21 +328,32 @@ body.shutdown * {
     transition: all 0.3s ease;
     padding: 10px;
     border-radius: 5px;
+    opacity: 1;
+    background-color: transparent;
+    position: relative;
 }
 
-.event-item:hover {
-    background-color: rgba(0, 255, 255, 0.1);
-}
-
-.event-dot {
-    color: #00ffff;
-    margin-right: 15px;
-    font-size: 1.2em;
-    text-shadow: 0 0 5px #00ffff;
+.event-item::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+        rgba(18, 16, 16, 0) 50%,
+        rgba(0, 0, 0, 0.25) 50%
+    );
+    background-size: 100% 4px;
+    pointer-events: none;
+    z-index: 1;
 }
 
 .event-content {
     flex: 1;
+    opacity: 1;
+    position: relative;
+    z-index: 2;
 }
 
 .event-year {
@@ -352,16 +361,30 @@ body.shutdown * {
     font-weight: bold;
     margin-bottom: 5px;
     text-shadow: 0 0 5px #00ffff;
+    opacity: 1;
 }
 
 .event-text {
     color: #fff;
     line-height: 1.4;
+    opacity: 1;
+    text-shadow: 0 0 5px #00ffff;
+    background-color: transparent;
+}
+
+.event-dot {
+    color: #00ffff;
+    margin-right: 15px;
+    font-size: 1.2em;
+    text-shadow: 0 0 5px #00ffff;
+    opacity: 1;
+    position: relative;
+    z-index: 2;
 }
 
 /* Event Details Styles */
 .event-details {
-    padding: 20px;
+    padding: 40px;
     max-width: 800px;
     margin: 0 auto;
 }
