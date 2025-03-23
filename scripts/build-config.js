@@ -17,7 +17,8 @@ fs.copyFileSync(
 const filesToCopy = [
     'styles.css',
     'script.js',
-    'data.js'
+    'data.js',
+    'favicon.svg'
 ];
 
 filesToCopy.forEach(file => {
