@@ -60,24 +60,24 @@
 
     <!-- GoatCounter -->
     <script>
-        window.goatcounter = {
-            visit_count: function(opts) {
-                return new Promise((resolve) => {
-                    var t = setInterval(function() {
-                        if (window.goatcounter && window.goatcounter.visit_count) {
-                            clearInterval(t)
-                            window.goatcounter.visit_count({
-                                append: null,
-                                path: window.location.pathname || '/'
-                            }).then(count => {
-                                console.log('GoatCounter count:', count); // Debug log
-                                resolve(count);
-                            });
-                        }
-                    }, 100)
-                });
+        // Wait for GoatCounter to load
+        var t = setInterval(function() {
+            if (window.goatcounter && window.goatcounter.visit_count) {
+                clearInterval(t);
+                // Initialize our custom visit_count function
+                window.goatcounter.visit_count = function(opts) {
+                    return new Promise((resolve) => {
+                        window.goatcounter.visit_count({
+                            append: null,
+                            path: window.location.pathname || '/'
+                        }).then(count => {
+                            console.log('GoatCounter count:', count);
+                            resolve(count);
+                        });
+                    });
+                };
             }
-        };
+        }, 100);
     </script>
     <script data-goatcounter="https://time-machine.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </head>

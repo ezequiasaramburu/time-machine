@@ -26,11 +26,7 @@ async function updateVisitorCounter() {
     console.log('Updating visitor counter...'); // Debug log
     if (window.goatcounter && window.goatcounter.visit_count) {
         try {
-            console.log('GoatCounter is available'); // Debug log
-            const count = await window.goatcounter.visit_count({
-                append: null,
-                path: window.location.pathname || '/'
-            });
+            const count = await window.goatcounter.visit_count();
             console.log('Visitor count received:', count); // Debug log
             if (count !== undefined && count !== null) {
                 console.log('Animating counter to:', count); // Debug log
