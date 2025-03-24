@@ -1,6 +1,3 @@
-// Import GA functions
-import { pageview, event } from './utils/ga.js';
-
 // Get DOM elements
 const terminal = document.getElementById('terminal');
 const yearInput = document.getElementById('yearInput');
@@ -24,46 +21,11 @@ const counterHTML = `
 `;
 visitorCounter.innerHTML = counterHTML;
 
-// Function to get real-time visitor count from GoatCounter
-function getRealTimeVisitors() {
-    return new Promise((resolve) => {
-        if (window.goatcounter) {
-            // Get the total number of page views
-            window.goatcounter.get('/count', (data) => {
-                if (data && data.count) {
-                    resolve(data.count);
-                } else {
-                    resolve(0);
-                }
-            });
-        } else {
-            resolve(0);
-        }
-    });
-}
-
 // Function to update visitor counter
 async function updateVisitorCounter() {
-    const visitorCount = await getRealTimeVisitors();
-    animateCounter(visitorCount);
-    
-    // Log the update for debugging
-    console.log('Visitor counter updated:', visitorCount);
-}
-
-// Track page view with more detailed information
-function trackPageView() {
-    if (typeof window.gtag !== 'undefined') {
-        // Use the pageview function from ga.js
-        pageview(window.location.pathname);
-        
-        // Track additional page view details as an event
-        event({
-            action: 'page_view_details',
-            category: 'engagement',
-            label: 'Time Machine Visit',
-            value: Date.now()
-        });
+    if (window.goatcounter && window.goatcounter.visit_count) {
+        const count = await window.goatcounter.visit_count({append: null});
+        animateCounter(count);
     }
 }
 
@@ -93,7 +55,6 @@ function animateCounter(targetNumber) {
 
 // Initialize and track when the page loads
 document.addEventListener('DOMContentLoaded', () => {
-    trackPageView();
     updateVisitorCounter(); // Update counter on page load
     displayEventsList();
     
@@ -105,7 +66,6 @@ document.addEventListener('DOMContentLoaded', () => {
 const TYPING_SPEED = 50; // milliseconds per character
 const SECRET_TYPING_SPEED = 30; // faster typing speed for secret messages
 const BACKSPACE_SPEED = 30; // milliseconds per character
-const CURSOR_BLINK_SPEED = 500; // milliseconds
 
 // State variables
 let isTyping = false;

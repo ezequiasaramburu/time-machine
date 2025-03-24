@@ -53,10 +53,15 @@
     </script>
 
     <!-- GoatCounter -->
-    <script data-goatcounter="https://time-machine.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
-    <noscript>
-        <img src="https://time-machine.goatcounter.com/count?p=/test-noscript" alt="GoatCounter">
-    </noscript>
+    <script>
+        var t = setInterval(function() {
+            if (window.goatcounter && window.goatcounter.visit_count) {
+                clearInterval(t)
+                window.goatcounter.visit_count({append: '#visitor-counter'})
+            }
+        }, 100)
+    </script>
+    <script data-goatcounter="https://time-machine.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </head>
 <body>
     <div class="main-container">
