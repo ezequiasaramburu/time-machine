@@ -24,19 +24,31 @@ visitorCounter.innerHTML = counterHTML;
 // Function to update visitor counter
 async function updateVisitorCounter() {
     if (window.goatcounter && window.goatcounter.visit_count) {
-        const count = await window.goatcounter.visit_count({append: null});
-        if (count !== undefined && count !== null) {
-            animateCounter(count);
+        try {
+            const count = await window.goatcounter.visit_count({
+                append: null,
+                path: window.location.pathname || '/'
+            });
+            console.log('Visitor count:', count); // Debug log
+            if (count !== undefined && count !== null) {
+                animateCounter(count);
+            }
+        } catch (error) {
+            console.error('Error getting visitor count:', error);
         }
     }
 }
 
 // Animate the counter
 function animateCounter(targetNumber) {
-    if (!targetNumber || isNaN(targetNumber)) return;
+    if (!targetNumber || isNaN(targetNumber)) {
+        console.log('Invalid target number:', targetNumber); // Debug log
+        return;
+    }
     
     const slots = document.querySelectorAll('.digit-slot');
     const targetStr = targetNumber.toString().padStart(6, '0');
+    console.log('Animating to:', targetStr); // Debug log
     
     slots.forEach((slot, index) => {
         const targetDigit = parseInt(targetStr[index]);
