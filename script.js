@@ -24,22 +24,18 @@ const counterHTML = `
 `;
 visitorCounter.innerHTML = counterHTML;
 
-// Function to get real-time visitor count from GA
+// Function to get real-time visitor count from GoatCounter
 function getRealTimeVisitors() {
     return new Promise((resolve) => {
-        if (typeof window.gtag !== 'undefined') {
-            // Track a custom event for visitor count using the event function from ga.js
-            event({
-                action: 'visitor_count',
-                category: 'engagement',
-                label: 'Visitor Counter Update'
+        if (window.goatcounter) {
+            // Get the total number of page views
+            window.goatcounter.get('/count', (data) => {
+                if (data && data.count) {
+                    resolve(data.count);
+                } else {
+                    resolve(0);
+                }
             });
-            
-            // Get the current timestamp to ensure unique counts
-            const timestamp = Date.now();
-            // Use a combination of timestamp and clientId for more accurate counting
-            const count = (timestamp % 1000000) + Math.floor(Math.random() * 1000);
-            resolve(count);
         } else {
             resolve(0);
         }
@@ -101,8 +97,8 @@ document.addEventListener('DOMContentLoaded', () => {
     updateVisitorCounter(); // Update counter on page load
     displayEventsList();
     
-    // Update counter more frequently (every 15 seconds) for more real-time feel
-    setInterval(updateVisitorCounter, 15000);
+    // Update counter every 30 seconds
+    setInterval(updateVisitorCounter, 30000);
 });
 
 // Animation settings
