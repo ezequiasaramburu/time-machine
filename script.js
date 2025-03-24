@@ -4,83 +4,6 @@ const yearInput = document.getElementById('yearInput');
 const travelBtn = document.getElementById('travelBtn');
 const backToTimelineBtn = document.getElementById('backToTimelineBtn');
 
-// Initialize visitor counter
-const visitorCounter = document.getElementById('visitor-counter');
-
-// Create slot machine style counter
-const counterHTML = `
-    <div class="visitor-count">
-        <span class="counter-label">You are visitor</span>
-        <div class="digit-slot">0</div>
-        <div class="digit-slot">0</div>
-        <div class="digit-slot">0</div>
-        <div class="digit-slot">0</div>
-        <div class="digit-slot">0</div>
-        <div class="digit-slot">0</div>
-    </div>
-`;
-visitorCounter.innerHTML = counterHTML;
-
-// Function to update visitor counter
-async function updateVisitorCounter() {
-    console.log('Updating visitor counter...'); // Debug log
-    if (window.goatcounter && window.goatcounter.visit_count) {
-        try {
-            const count = await window.goatcounter.visit_count();
-            console.log('Visitor count received:', count); // Debug log
-            if (count !== undefined && count !== null) {
-                console.log('Animating counter to:', count); // Debug log
-                animateCounter(count);
-            } else {
-                console.log('Count is undefined or null'); // Debug log
-            }
-        } catch (error) {
-            console.error('Error getting visitor count:', error);
-        }
-    } else {
-        console.log('GoatCounter is not available'); // Debug log
-    }
-}
-
-// Animate the counter
-function animateCounter(targetNumber) {
-    if (!targetNumber || isNaN(targetNumber)) {
-        console.log('Invalid target number:', targetNumber); // Debug log
-        return;
-    }
-    
-    const slots = document.querySelectorAll('.digit-slot');
-    const targetStr = targetNumber.toString().padStart(6, '0');
-    console.log('Animating to:', targetStr); // Debug log
-    
-    slots.forEach((slot, index) => {
-        const targetDigit = parseInt(targetStr[index]);
-        let currentDigit = 0;
-        
-        const animate = () => {
-            if (currentDigit === targetDigit) {
-                slot.textContent = currentDigit;
-                return;
-            }
-            
-            currentDigit = (currentDigit + 1) % 10;
-            slot.textContent = currentDigit;
-            setTimeout(animate, 50);
-        };
-        
-        animate();
-    });
-}
-
-// Initialize and track when the page loads
-document.addEventListener('DOMContentLoaded', () => {
-    updateVisitorCounter(); // Update counter on page load
-    displayEventsList();
-    
-    // Update counter every 30 seconds
-    setInterval(updateVisitorCounter, 30000);
-});
-
 // Animation settings
 const TYPING_SPEED = 50; // milliseconds per character
 const SECRET_TYPING_SPEED = 30; // faster typing speed for secret messages
@@ -494,4 +417,9 @@ yearInput.addEventListener('input', (e) => {
             yearInput.setCustomValidity('');
         }
     }
+});
+
+// Initialize when the page loads
+document.addEventListener('DOMContentLoaded', () => {
+    displayEventsList();
 });

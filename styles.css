@@ -274,41 +274,6 @@ body.shutdown * {
     opacity: 1;
 }
 
-/* Speedrun mode styles */
-.speedrun-mode {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-.speedrun-item {
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    padding: 5px 0;
-}
-
-.speedrun-dot {
-    color: #00ff00;
-    text-shadow: 0 0 5px #00ff00;
-    font-size: 12px;
-    margin-top: 8px;
-}
-
-.speedrun-content {
-    flex: 1;
-}
-
-.speedrun-year {
-    color: #00ff00;
-    font-weight: bold;
-    margin-bottom: 2px;
-}
-
-.speedrun-event {
-    color: #00ff00;
-    opacity: 0.9;
-}
 
 .events-list {
     margin: 20px 0;
@@ -466,34 +431,6 @@ body.shutdown * {
     }
 }
 
-#visitor-counter {
-    position: relative;
-    z-index: 1000;
-}
-
-.visitor-count {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    font-family: 'Courier New', monospace;
-    color: #00ff00;
-    text-shadow: 0 0 5px #00ff00;
-}
-
-.counter-label {
-    font-size: 14px;
-    opacity: 0.8;
-}
-
-.digit-slot {
-    background-color: #000;
-    border: 1px solid #00ff00;
-    padding: 2px 8px;
-    min-width: 20px;
-    text-align: center;
-    font-size: 16px;
-    box-shadow: 0 0 5px #00ff00;
-}
 
 footer {
     width: 100%;

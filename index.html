@@ -37,9 +37,6 @@
     <meta name="msapplication-TileColor" content="#000000">
     <meta name="msapplication-config" content="none">
     
-    <!-- Content Security Policy -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://time-machine.goatcounter.com https://gc.zgo.at https://static.zgo.at https://www.googletagmanager.com; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://gc.zgo.at; style-src 'self' 'unsafe-inline'; img-src 'self' https://www.googletagmanager.com https://gc.zgo.at; font-src 'self' data: https://gc.zgo.at https://static.zgo.at; connect-src 'self' https://time-machine.goatcounter.com https://gc.zgo.at https://www.googletagmanager.com https://*.google-analytics.com https://region1.google-analytics.com https://stats.g.doubleclick.net;">
-    
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     
@@ -58,34 +55,9 @@
         gtag('config', 'G-0ZH87NEZSR');
     </script>
 
-    <!-- GoatCounter -->
-    <script>
-        // Wait for GoatCounter to load
-        var t = setInterval(function() {
-            if (window.goatcounter && window.goatcounter.visit_count) {
-                clearInterval(t);
-                // Store the original visit_count function
-                const originalVisitCount = window.goatcounter.visit_count;
-                // Create our custom visit_count function
-                window.goatcounter.visit_count = function(opts) {
-                    return originalVisitCount({
-                        append: null,
-                        path: window.location.pathname || '/'
-                    });
-                };
-            }
-        }, 100);
-    </script>
-    <script data-goatcounter="https://time-machine.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </head>
 <body>
     <div class="main-container">
-        <div id="visitor-counter">
-            <!-- Note about ad blockers -->
-            <div class="visitor-note" style="font-size: 0.8em; color: #666; margin-top: 5px;">
-                Note: If you're using an ad blocker, the visitor counter might not work. Consider disabling it for this site.
-            </div>
-        </div>
         <div id="terminal"></div>
         <div class="control-panel">
             <input type="number" id="yearInput" placeholder="Enter year" min="1936" max="2025">
