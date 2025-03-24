@@ -23,19 +23,26 @@ visitorCounter.innerHTML = counterHTML;
 
 // Function to update visitor counter
 async function updateVisitorCounter() {
+    console.log('Updating visitor counter...'); // Debug log
     if (window.goatcounter && window.goatcounter.visit_count) {
         try {
+            console.log('GoatCounter is available'); // Debug log
             const count = await window.goatcounter.visit_count({
                 append: null,
                 path: window.location.pathname || '/'
             });
-            console.log('Visitor count:', count); // Debug log
+            console.log('Visitor count received:', count); // Debug log
             if (count !== undefined && count !== null) {
+                console.log('Animating counter to:', count); // Debug log
                 animateCounter(count);
+            } else {
+                console.log('Count is undefined or null'); // Debug log
             }
         } catch (error) {
             console.error('Error getting visitor count:', error);
         }
+    } else {
+        console.log('GoatCounter is not available'); // Debug log
     }
 }
 

@@ -70,6 +70,7 @@
                                 append: null,
                                 path: window.location.pathname || '/'
                             }).then(count => {
+                                console.log('GoatCounter count:', count); // Debug log
                                 resolve(count);
                             });
                         }
