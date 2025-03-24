@@ -25,7 +25,7 @@ visitorCounter.innerHTML = counterHTML;
 function getRealTimeVisitors() {
     return new Promise((resolve) => {
         if (typeof window.gtag !== 'undefined') {
-            window.gtag('get', '%NEXT_PUBLIC_GA_ID%', 'clientId', (clientId) => {
+            window.gtag('get', 'G-0ZH87NEZSR', 'clientId', (clientId) => {
                 // Use the clientId as a proxy for visitor count
                 // This is a simplified approach since GA4 doesn't provide direct real-time API access
                 const count = parseInt(clientId.slice(-6), 16) % 1000000;
@@ -49,7 +49,7 @@ function trackPageView() {
         window.gtag('event', 'page_view', {
             event_category: 'engagement',
             event_label: 'Time Machine Visit',
-            send_to: '%NEXT_PUBLIC_GA_ID%'
+            send_to: 'G-0ZH87NEZSR'
         });
     }
 }

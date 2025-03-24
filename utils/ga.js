@@ -1,5 +1,5 @@
 // Google Analytics setup
-export const GA_TRACKING_ID = process.env.NEXT_PUBLIC_GA_ID
+export const GA_TRACKING_ID = 'G-0ZH87NEZSR'
 
 // Pageview tracking
 export const pageview = (url) => {
