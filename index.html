@@ -64,16 +64,13 @@
         var t = setInterval(function() {
             if (window.goatcounter && window.goatcounter.visit_count) {
                 clearInterval(t);
-                // Initialize our custom visit_count function
+                // Store the original visit_count function
+                const originalVisitCount = window.goatcounter.visit_count;
+                // Create our custom visit_count function
                 window.goatcounter.visit_count = function(opts) {
-                    return new Promise((resolve) => {
-                        window.goatcounter.visit_count({
-                            append: null,
-                            path: window.location.pathname || '/'
-                        }).then(count => {
-                            console.log('GoatCounter count:', count);
-                            resolve(count);
-                        });
+                    return originalVisitCount({
+                        append: null,
+                        path: window.location.pathname || '/'
                     });
                 };
             }
