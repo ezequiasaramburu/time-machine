@@ -25,12 +25,16 @@ visitorCounter.innerHTML = counterHTML;
 async function updateVisitorCounter() {
     if (window.goatcounter && window.goatcounter.visit_count) {
         const count = await window.goatcounter.visit_count({append: null});
-        animateCounter(count);
+        if (count !== undefined && count !== null) {
+            animateCounter(count);
+        }
     }
 }
 
 // Animate the counter
 function animateCounter(targetNumber) {
+    if (!targetNumber || isNaN(targetNumber)) return;
+    
     const slots = document.querySelectorAll('.digit-slot');
     const targetStr = targetNumber.toString().padStart(6, '0');
     

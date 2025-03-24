@@ -57,7 +57,7 @@
         var t = setInterval(function() {
             if (window.goatcounter && window.goatcounter.visit_count) {
                 clearInterval(t)
-                window.goatcounter.visit_count({append: '#visitor-counter'})
+                window.goatcounter.visit_count({append: null})
             }
         }, 100)
     </script>
