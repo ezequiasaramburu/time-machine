@@ -38,7 +38,7 @@
     <meta name="msapplication-config" content="none">
     
     <!-- Content Security Policy -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://time-machine.goatcounter.com https://gc.zgo.at https://static.zgo.at https://www.googletagmanager.com; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://gc.zgo.at; style-src 'self' 'unsafe-inline'; img-src 'self' https://www.googletagmanager.com https://gc.zgo.at; font-src 'self' data: https://gc.zgo.at https://static.zgo.at; connect-src 'self' https://time-machine.goatcounter.com https://gc.zgo.at https://www.googletagmanager.com;">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://time-machine.goatcounter.com https://gc.zgo.at https://static.zgo.at https://www.googletagmanager.com; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://gc.zgo.at; style-src 'self' 'unsafe-inline'; img-src 'self' https://www.googletagmanager.com https://gc.zgo.at; font-src 'self' data: https://gc.zgo.at https://static.zgo.at; connect-src 'self' https://time-machine.goatcounter.com https://gc.zgo.at https://www.googletagmanager.com https://*.google-analytics.com https://region1.google-analytics.com https://stats.g.doubleclick.net;">
     
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
@@ -60,15 +60,23 @@
 
     <!-- GoatCounter -->
     <script>
-        var t = setInterval(function() {
-            if (window.goatcounter && window.goatcounter.visit_count) {
-                clearInterval(t)
-                window.goatcounter.visit_count({
-                    append: null,
-                    path: window.location.pathname || '/'
-                })
+        window.goatcounter = {
+            visit_count: function(opts) {
+                return new Promise((resolve) => {
+                    var t = setInterval(function() {
+                        if (window.goatcounter && window.goatcounter.visit_count) {
+                            clearInterval(t)
+                            window.goatcounter.visit_count({
+                                append: null,
+                                path: window.location.pathname || '/'
+                            }).then(count => {
+                                resolve(count);
+                            });
+                        }
+                    }, 100)
+                });
             }
-        }, 100)
+        };
     </script>
     <script data-goatcounter="https://time-machine.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </head>
